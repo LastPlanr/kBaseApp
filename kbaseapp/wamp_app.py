@@ -1,7 +1,7 @@
 import asyncio
 import sys
 
-from autobahn.asyncio.wamp import ApplicationSession
+from autobahn.asyncio.wamp import ApplicationSession, ApplicationRunner
 from autobahn.wamp.exception import ApplicationError
 from prettyconf import config
 
@@ -88,3 +88,16 @@ class WampApp(ApplicationSession):
         super().onClose(*args, **kwargs)
         print('Closed.')
         sys.exit(self.exit_status)
+
+    @classmethod
+    def run(cls):
+        url = config('URL', default='ws://crossbar.dronemapp.com:80/ws')
+        realm = config('REALM', default='kotoko')
+
+        runner = ApplicationRunner(url, realm)
+
+        try:
+            runner.run(cls)
+        except OSError as ex:
+            print('OSError:', ex)
+            sys.exit(100)
