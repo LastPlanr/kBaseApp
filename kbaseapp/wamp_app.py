@@ -91,8 +91,8 @@ class WampApp(ApplicationSession):
 
     @classmethod
     def run(cls):
-        url = config('URL', default='ws://crossbar.dronemapp.com:80/ws')
-        realm = config('REALM', default='kotoko')
+        url = config('WAMP_URL')
+        realm = config('WAMP_REALM')
 
         runner = ApplicationRunner(url, realm)
 
