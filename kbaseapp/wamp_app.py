@@ -6,7 +6,7 @@ from autobahn.wamp.exception import ApplicationError
 from prettyconf import config
 
 
-def register_method(self, name):
+def register_method(name):
     def decorator(method):
         method.wamp_name = name
         return method
