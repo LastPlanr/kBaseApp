@@ -42,7 +42,7 @@ class WampApp(ApplicationSession):
 
     def onConnect(self):
         print("Client session connected. Starting WAMP-Ticket authentication on realm '{}' as principal '{}' ..".format(
-            self.config.realm, PRINCIPAL)
+            self.config.realm, self.PRINCIPAL)
         )
         self.join(self.config.realm, [u"ticket"], self.PRINCIPAL)
 
