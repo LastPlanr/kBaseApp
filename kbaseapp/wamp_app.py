@@ -27,7 +27,7 @@ class WampApp(ApplicationSession):
             thing = getattr(self, thing_name)
             method_name = getattr(thing, 'wamp_name', None)
             if method_name:
-                self.methods[method_name] = method
+                self.methods[method_name] = thing
 
     def init(self):
         pass
