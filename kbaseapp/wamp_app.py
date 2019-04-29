@@ -2,16 +2,17 @@ import asyncio
 import sys
 
 from autobahn.asyncio.wamp import ApplicationSession, ApplicationRunner
+from autobahn.wamp.types import RegisterOptions
 from autobahn.wamp.exception import ApplicationError
 from prettyconf import config
 
 
-def register_method(name):
+def register_method(name, **options):
     def decorator(method):
         method.wamp_name = name
+        method.wamp_options = options
         return method
     return decorator
-
 
 
 class WampApp(ApplicationSession):
@@ -27,7 +28,7 @@ class WampApp(ApplicationSession):
             thing = getattr(self, thing_name)
             method_name = getattr(thing, 'wamp_name', None)
             if method_name:
-                self.methods[method_name] = thing
+                self.methods[method_name] = (thing, thing.wamp_options)
 
     def init(self):
         pass
@@ -57,8 +58,13 @@ class WampApp(ApplicationSession):
                 await asyncio.sleep(5)
 
             try:
-                for method_name, method in self.methods.items():
-                    await self.register(method, method_name)
+                for method_name, method_data in self.methods.items():
+                    method, method_options = method_data
+                    if method_options:
+                        options = RegisterOptions(**method_options)
+                        await self.register(method, method_name, options)
+                    else:
+                        await self.register(method, method_name)
             except ApplicationError as e:
                 last_exception = e
                 continue
