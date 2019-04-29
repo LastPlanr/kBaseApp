@@ -46,6 +46,10 @@ class WampApp(ApplicationSession):
         )
         self.join(self.config.realm, [u"ticket"], self.PRINCIPAL)
 
+    def onUserError(self, *args, **kwargs):
+        print('onUserError:', args, ';', kwargs)
+        return super().onUserError(*args, **kwargs)
+
     async def onJoin(self, details):
         last_exception = None
         for counter in range(0, 3):
