@@ -51,6 +51,9 @@ class WampApp(ApplicationSession):
         print('onUserError:', args, ';', kwargs)
         return super().onUserError(*args, **kwargs)
 
+    async def ready(self):
+        pass
+
     async def onJoin(self, details):
         last_exception = None
         for counter in range(0, 3):
@@ -75,6 +78,9 @@ class WampApp(ApplicationSession):
             print(f"Could not register some methods: {last_exception}")
             self.exit_status = 10
             self.disconnect()
+            return
+
+        await self.ready()
 
     def onChallenge(self, challenge):
         if challenge.method == u"ticket":
