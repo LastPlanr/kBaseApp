@@ -17,6 +17,7 @@ def register_method(name, **options):
 
 class WampApp(ApplicationSession):
     PRINCIPAL = None
+    METHODS_SUFFIX = ''
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -63,11 +64,13 @@ class WampApp(ApplicationSession):
             try:
                 for method_name, method_data in self.methods.items():
                     method, method_options = method_data
+                    sufixed_name = f'{method_name}{self.METHODS_SUFFIX}'
+
                     if method_options:
                         options = RegisterOptions(**method_options)
-                        await self.register(method, method_name, options)
+                        await self.register(method, sufixed_name, options)
                     else:
-                        await self.register(method, method_name)
+                        await self.register(method, sufixed_name)
             except ApplicationError as e:
                 last_exception = e
                 continue
