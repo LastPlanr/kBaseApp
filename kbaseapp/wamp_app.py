@@ -1,3 +1,4 @@
+from concurrent.futures import ThreadPoolExecutor
 import asyncio
 import sys
 
@@ -24,6 +25,7 @@ class WampApp(ApplicationSession):
         self.exit_status = 0
         self.init()
         self.methods = {}
+        self.thread_pool_executor = ThreadPoolExecutor()
 
         for thing_name in dir(self):
             thing = getattr(self, thing_name)
@@ -83,6 +85,8 @@ class WampApp(ApplicationSession):
             self.disconnect()
             return
 
+        self.loop = asyncio.get_event_loop()
+
         await self.ready()
 
     def onChallenge(self, challenge):
@@ -120,3 +124,6 @@ class WampApp(ApplicationSession):
         except OSError as ex:
             print('OSError:', ex)
             sys.exit(100)
+
+    async def async_run(self, function, *args, **kwargs):
+        await self.loop.run_in_executor(self.thread_pool_executor, function, *args, **kwargs)
