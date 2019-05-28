@@ -130,4 +130,4 @@ class WampApp(ApplicationSession):
             sys.exit(100)
 
     async def async_run(self, function, *args, **kwargs):
-        await self.loop.run_in_executor(self.thread_pool_executor, function, *args, **kwargs)
+        return await self.loop.run_in_executor(self.thread_pool_executor, function, *args, **kwargs)
