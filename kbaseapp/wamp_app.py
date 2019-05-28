@@ -3,6 +3,7 @@ import asyncio
 import sys
 
 from autobahn.asyncio.wamp import ApplicationSession, ApplicationRunner
+from autobahn.wamp.auth import compute_wcs
 from autobahn.wamp.types import RegisterOptions
 from autobahn.wamp.exception import ApplicationError
 from prettyconf import config
@@ -95,7 +96,7 @@ class WampApp(ApplicationSession):
             print("WAMP-Ticket challenge received: {}".format(challenge))
             return secret
         elif challenge.method == u"wampcra":
-            return auth.compute_wcs(secret, challenge.extra['challenge'])
+            return compute_wcs(secret, challenge.extra['challenge'])
         else:
             raise Exception("Invalid authmethod {}".format(challenge.method))
 
