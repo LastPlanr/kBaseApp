@@ -90,9 +90,12 @@ class WampApp(ApplicationSession):
         await self.ready()
 
     def onChallenge(self, challenge):
+        secret = config('WAMPYSECRET')
         if challenge.method == u"ticket":
             print("WAMP-Ticket challenge received: {}".format(challenge))
-            return config('WAMPYSECRET')
+            return secret
+        elif challenge.method == u"wampcra":
+            return auth.compute_wcs(secret, challenge.extra['challenge'])
         else:
             raise Exception("Invalid authmethod {}".format(challenge.method))
 
