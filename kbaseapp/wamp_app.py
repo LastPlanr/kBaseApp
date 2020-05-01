@@ -91,7 +91,7 @@ class WampApp(ApplicationSession):
         await self.ready()
 
     def onChallenge(self, challenge):
-        secret = config('WAMPYSECRET')
+        secret = config('WAMP_SECRET')
         if challenge.method == u"ticket":
             print("WAMP-Ticket challenge received: {}".format(challenge))
             return secret
